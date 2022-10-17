@@ -7,12 +7,12 @@ def call() {
         npm install
       '''
     }
-    sh 'env'
+    if(env.BRANCH_NAME == env.TAG_NAME)
+    {
+      common.publishArtifacts()
+    }
   }
 }
 
-//if(env.BRANCH_NAME == env.TAG_NAME){
-//  common.publishArtifacts()
-//}
-//
+
 
