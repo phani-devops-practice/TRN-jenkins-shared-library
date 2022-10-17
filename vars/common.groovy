@@ -13,5 +13,13 @@ def publishArtifacts() {
       """
     }
   }
+  stage('Push Artifacts to nexus') {
+    withCredentials([usernamePassword(credentialsId: 'NEXUS', passwordVariable: 'pass', usernameVariable: 'user')]) {
+      sh """
+        curl -v -u ${user}:${pass} --upload-file ${COMPONENT}-${TAG_NAME}.zip http://nexus.roboshop.internal:8081/repository/${COMPONENT}/${COMPONENT}-${TAG_NAME}.zip
+      """
+    }
+  }
 }
 
+ 
