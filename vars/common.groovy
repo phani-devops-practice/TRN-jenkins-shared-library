@@ -18,6 +18,22 @@ def publishArtifacts() {
         zip -r ${COMPONENT}-${TAG_NAME}.zip ${COMPONENT}.jar 
       """
     }
+    if(env.APP_TYPE == "nginx") {
+      sh """
+        cd static
+        zip -r ../${COMPONENT}-${TAG_NAME}.zip *
+      """
+    }
+    if(env.APP_TYPE == "python") {
+      sh """
+        zip -r ${COMPONENT}-${TAG_NAME}.zip *.py ${COMPONENT}.ini requirements.txt
+      """
+    }
+    if(env.APP_TYPE == "golang") {
+      sh """
+        zip -r ${COMPONENT}-${TAG_NAME}.zip main.go
+      """
+    }
   }
   stage('Push Artifacts to nexus') {
     withCredentials([usernamePassword(credentialsId: 'NEXUS', passwordVariable: 'pass', usernameVariable: 'user')]) {
