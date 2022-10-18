@@ -50,42 +50,44 @@ def codeChecks() {
       Qualitychecks: {
         echo "hello"
       },
-      Unittests: {
-        unitTests()
+      unitTests    : {
+        unitTest()
       }
     ])
   }
+}
 
-def unitTests() {
+def unitTest() {
   stage('Prepare Artifacts') {
-    if(env.APP_TYPE == "nodejs") {
+    if (env.APP_TYPE == "nodejs") {
       sh """
         # npm run test
         echo run test cases
       """
     }
-    if(env.APP_TYPE == "maven") {
+    if (env.APP_TYPE == "maven") {
       sh """
         # mvn test
         echo run test cases
       """
     }
-    if(env.APP_TYPE == "nginx") {
+    if (env.APP_TYPE == "nginx") {
       sh """
         # npm run test
         echo run test cases
       """
     }
-    if(env.APP_TYPE == "python") {
+    if (env.APP_TYPE == "python") {
       sh """
         # python -m unittest
         echo run test cases
       """
     }
-    if(env.APP_TYPE == "golang") {
+    if (env.APP_TYPE == "golang") {
       sh """
         # go test
         echo run test cases 
       """
     }
+  }
 }
