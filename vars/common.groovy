@@ -49,6 +49,46 @@ def publishArtifacts() {
   stage("Run smoke test for dev") {
     sh "echo run smoke test"
   }
+  promoteRelease("dev", "qa")
+
+  stage("deploy-to-any-qa") {
+//    build job: 'deploy-to-any-dev', parameters: [string(name: 'COMPONENT', value: "${COMPONENT}"), string(name: 'ENV', value: "${ENV}"), string(name: 'APP_VERSION', value: "${TAG_NAME}")]
+    sh "echo QA deploy"
+  }
+  runTests()
+  stage("Run smoke test for qa") {
+    sh "echo run smoke test"
+  }
+  promoteRelease("qa", "prod")
+
+}
+
+def runTests() {
+  stage('Quality checks') {
+    parallel([
+      IntigrationTests: {
+        echo "intigration tests"
+      },
+      End2endTests: {
+        echo "end2end tests"
+      },
+      PenetrationTests: {
+        echo "penetration tests"
+      }
+    ])
+  }
+}
+
+
+def promoteRelease(SOURCE_ENV, ENV) {
+  stage('Promoting the artifact from ${SOURCE_ENV} to ${ENV}') {
+    withCredentials([usernamePassword(credentialsId: 'NEXUS', passwordVariable: 'pass', usernameVariable: 'user')]) {
+      sh """
+        cp ${SOURCE_ENV}-${COMPONENT}-${TAG_NAME}.zip ${ENV}-${COMPONENT}-${TAG_NAME}.zip
+        curl -v -u ${user}:${pass} --upload-file ${ENV}-${COMPONENT}-${TAG_NAME}.zip http://nexus.roboshop.internal:8081/repository/${COMPONENT}/${ENV}-${COMPONENT}-${TAG_NAME}.zip
+      """
+    }
+  }
 }
 
 def codeChecks() {
