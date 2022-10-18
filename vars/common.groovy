@@ -43,10 +43,10 @@ def publishArtifacts() {
       """
     }
   }
-  stage('deploy-to-any-dev') {
+  stage("deploy-to-any-dev") {
     build job: 'deploy-to-any-dev', parameters: [string(name: 'COMPONENT', value: "${COMPONENT}"), string(name: 'ENV', value: "${ENV}"), string(name: 'APP_VERSION', value: "${TAG_NAME}")]
   }
-  stage('Run smoke test for dev') {
+  stage("Run smoke test for dev") {
     sh "echo run smoke test"
   }
 }
