@@ -81,7 +81,7 @@ def runTests() {
 
 
 def promoteRelease(SOURCE_ENV, ENV) {
-  stage('Promoting the artifact from ${SOURCE_ENV} to ${ENV}') {
+  stage("Promoting the artifact from ${SOURCE_ENV} to ${ENV}") {
     withCredentials([usernamePassword(credentialsId: 'NEXUS', passwordVariable: 'pass', usernameVariable: 'user')]) {
       sh """
         cp ${SOURCE_ENV}-${COMPONENT}-${TAG_NAME}.zip ${ENV}-${COMPONENT}-${TAG_NAME}.zip
