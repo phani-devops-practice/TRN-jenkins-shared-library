@@ -6,39 +6,40 @@ def pipelineINIT() {
 }
 
 def publishArtifacts() {
+  env.ENV="dev"
   stage('Prepare Artifacts') {
     if(env.APP_TYPE == "nodejs") {
       sh """
-        zip -r ${COMPONENT}-${TAG_NAME}.zip node_modules server.js
+        zip -r ${ENV}-${COMPONENT}-${TAG_NAME}.zip node_modules server.js
       """
     }
     if(env.APP_TYPE == "maven") {
       sh """
         cp target/${COMPONENT}-1.0.jar ${COMPONENT}.jar
-        zip -r ${COMPONENT}-${TAG_NAME}.zip ${COMPONENT}.jar 
+        zip -r ${ENV}-${COMPONENT}-${TAG_NAME}.zip ${COMPONENT}.jar 
       """
     }
     if(env.APP_TYPE == "nginx") {
       sh """
         cd static
-        zip -r ../${COMPONENT}-${TAG_NAME}.zip *
+        zip -r ../${ENV}-${COMPONENT}-${TAG_NAME}.zip *
       """
     }
     if(env.APP_TYPE == "python") {
       sh """
-        zip -r ${COMPONENT}-${TAG_NAME}.zip *.py ${COMPONENT}.ini requirements.txt
+        zip -r ${ENV}-${COMPONENT}-${TAG_NAME}.zip *.py ${COMPONENT}.ini requirements.txt
       """
     }
     if(env.APP_TYPE == "golang") {
       sh """
-        zip -r ${COMPONENT}-${TAG_NAME}.zip main.go
+        zip -r ${ENV}-${COMPONENT}-${TAG_NAME}.zip main.go
       """
     }
   }
   stage('Push Artifacts to nexus') {
     withCredentials([usernamePassword(credentialsId: 'NEXUS', passwordVariable: 'pass', usernameVariable: 'user')]) {
       sh """
-        curl -v -u ${user}:${pass} --upload-file ${COMPONENT}-${TAG_NAME}.zip http://nexus.roboshop.internal:8081/repository/${COMPONENT}/${COMPONENT}-${TAG_NAME}.zip
+        curl -v -u ${user}:${pass} --upload-file ${ENV}-${COMPONENT}-${TAG_NAME}.zip http://nexus.roboshop.internal:8081/repository/${COMPONENT}/${ENV}-${COMPONENT}-${TAG_NAME}.zip
       """
     }
   }
