@@ -9,7 +9,7 @@ def call() {
     ansiColor('xterm') {
 
       stage('Code Checkout') {
-        sh 'find . | sed -e "1d" | xargs rm -rf'
+        sh 'rm -rf *'
         git branch: 'main', url: 'https://github.com/phani-devops-practice/roboshop-terraform-mutable.git'
       }
 
