@@ -9,6 +9,7 @@ def call() {
 
       stage('Code Checkout') {
         sh 'rm -rf *'
+        git branch: 'main', url: 'https://github.com/phani-devops-practice/roboshop-terraform-mutable.git'
       }
       stage('Terraform Init') {
         sh 'terraform init -backend-config=env/${ENV}-backend.tfvars'
