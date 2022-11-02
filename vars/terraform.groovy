@@ -1,5 +1,10 @@
 def call() {
   node() {
+    properties([
+      parameters([
+        choice(choices: ['dev', 'prod'], description: "Choose Environment", name: "ENV"),
+      ]),
+    ])
     ansiColor('xterm') {
 
       stage('Code Checkout') {
